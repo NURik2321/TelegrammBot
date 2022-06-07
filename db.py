@@ -1,6 +1,6 @@
 import sqlite3
 
-class Database:
+class DatabaseREg:
     def __init__(self, n):
         self.connection = sqlite3.connect(n)
         self.cursor = self.connection.cursor()
@@ -46,3 +46,4 @@ class Database:
             for row in res:
                 password = str(row[0])
             return password
+

@@ -1,29 +1,37 @@
 from aiogram import Bot,Dispatcher,executor,types
 import config
 import markups
-from db import Database
-
+from db import DatabaseREg
+from dbprepod import DatabasePropod
 bot = Bot(config.TOKEN)
 
-db = Database('database.db')
-
+db = DatabaseREg('database.db')
+dbprepod = DatabasePropod('database.db')
 dp = Dispatcher(bot)
 
 @dp.message_handler(commands=['start'])
 async def start(message : types.Message):
         if(not db.user_check(message.from_user.id)):
                 db.add_user(message.from_user.id)
-                await bot.send_message(message.from_user.id,"/reg")
+                await bot.send_message(message.from_user.id,"/reg" , reply_markup=markups.notreg)
                 await bot.send_message(message.from_user.id, "Укажите ваш ник")
 
         else:
                 await bot.send_message(message.from_user.id , "Вы уже зарегистрированы",reply_markup=markups.mainMenu)
 
-@dp.message_handler(commands=['reg'])
+@dp.message_handler()
 async def bot_message(message : types.Message):
         if message.chat.type == 'private':
                 if(message.text == "ПРОФИЛЬ"):
-                        pass
+                        await bot.send_message(message.from_user.id, " Ваш email "+db.get_email(message.from_user.id))
+
+                elif(message.text == "Абдрахимова Д.И."):
+                       # await bot.send_message(message.from_user.id, "Ввидете Фамилию и инициалы")
+                        if(dbprepod.getPrepod(message.text) == None):
+                                print("no")
+                        else:
+                                print("yes")
+
                 else:
 
                         if(db.get_signup(message.from_user.id) == "setnickname"):
@@ -47,7 +55,7 @@ async def bot_message(message : types.Message):
                         elif (db.get_signup(message.from_user.id) == "setpassword"):
 
                                 db.set_password(message.from_user.id, message.text)
-                                await bot.send_message(message.from_user.id, "Вы успешно прошли регистрацию")
+                                await bot.send_message(message.from_user.id, "Вы успешно прошли регистрацию" ,reply_markup=markups.mainMenu)
                                 db.set_signup(message.from_user.id, "done")
 
 
