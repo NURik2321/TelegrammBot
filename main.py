@@ -25,12 +25,12 @@ async def bot_message(message : types.Message):
                 if(message.text == "ПРОФИЛЬ"):
                         await bot.send_message(message.from_user.id, " Ваш email "+db.get_email(message.from_user.id))
 
-                elif(message.text == "Абдрахимова Д.И."):
-                       # await bot.send_message(message.from_user.id, "Ввидете Фамилию и инициалы")
-                        if(dbprepod.getPrepod(message.text) == None):
-                                print("no")
-                        else:
-                                print("yes")
+
+                elif(dbprepod.getPrepod(message.text) != None):
+                      await bot.send_message(message.from_user.id,dbprepod.getPrepod(message.text))
+
+                elif(message.text == "Поиск препода"):
+                        await bot.send_message(message.from_user.id, "Для того чтобы найти информацию введите фамилию и инициалы ")
 
                 else:
 
